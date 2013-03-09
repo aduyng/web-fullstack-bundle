@@ -1,0 +1,35 @@
+# Turn on Expires and set default to 0
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault A0
+
+    # Set up caching on media files for 1 year (forever?)
+    <FilesMatch "\.(flv|ico|pdf|avi|mov|ppt|doc|mp3|wmv|wav)$">
+    ExpiresDefault A29030400
+        <IfModule mod_headers.c>
+            Header append Cache-Control "public"
+        </IfModule>
+    </FilesMatch>
+
+</IfModule>
+
+<IfModule mod_deflate.c>
+    SetOutputFilter DEFLATE
+    # Don’t compress
+    <IfModule mod_setenvif.c>
+        SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+        SetEnvIfNoCase Request_URI \.(?:exe|t?gz|zip|bz2|sit|rar)$ no-gzip dont-vary
+    </IfModule>
+    #Dealing with proxy servers
+    <IfModule mod_headers.c>
+        Header append Vary User-Agent
+        Header append X-FRAME-OPTIONS "SAMEORIGIN"
+    </IfModule>
+</IfModule>
+
+<IfModule mod_setenvif.c>
+  <IfModule mod_headers.c>
+    BrowserMatch chromeframe gcf
+    Header append X-UA-Compatible "chrome=1" env=gcf
+  </IfModule>
+</IfModule>
